@@ -6,6 +6,7 @@ using UnityStandardAssets.Characters.FirstPerson;
 public class PlayerMovementController : MonoBehaviour
 {
     public Joystick _joystick;
+    public FixedTouchField _fixedTouchField;
 
     private RigidbodyFirstPersonController _rigidbodyFirstPersonController;
 
@@ -18,5 +19,6 @@ public class PlayerMovementController : MonoBehaviour
     {
         _rigidbodyFirstPersonController._joystickInputAxis.x = _joystick.Horizontal;
         _rigidbodyFirstPersonController._joystickInputAxis.y = _joystick.Vertical;
+        _rigidbodyFirstPersonController.mouseLook._lookInputAxis = _fixedTouchField.TouchDist;
     }
 }
