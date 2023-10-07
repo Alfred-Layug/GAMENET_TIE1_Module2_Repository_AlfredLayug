@@ -68,4 +68,37 @@ public class Shooting : MonoBehaviourPunCallbacks
             _animator.SetBool("isDead", true);
         }
     }
+
+    private IEnumerator RespawnCountdown()
+    {
+        GameObject respawnText = GameObject.Find("Respawn Text");
+        float respawnTime = 5.0f;
+
+        while (respawnTime > 0)
+        {
+            yield return new WaitForSeconds(1.0f);
+            respawnTime--;
+
+            transform.GetComponent<PlayerMovementController>().enabled = false;
+            respawnText.GetComponent<Text>().text = "You are killed. Respawning in " + respawnTime.ToString(".00");
+        }
+
+        _animator.SetBool("isDead", false);
+        respawnText.GetComponent<Text>().text = "";
+
+        int randomPointX = Random.Range(-20, 20);
+        int randomPointZ = Random.Range(-20, 20);
+
+        this.transform.position = new Vector3(randomPointX, 0, randomPointZ);
+        transform.GetComponent<PlayerMovementController>().enabled = true;
+
+        photonView.RPC("RegainHealth", RpcTarget.AllBuffered);
+    }
+
+    [PunRPC]
+    public void RegainHealth()
+    {
+        _health = 100;
+        _healthBar.fillAmount = _health / _startHealth;
+    }
 }
