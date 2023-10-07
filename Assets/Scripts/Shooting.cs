@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using TMPro;
 
 public class Shooting : MonoBehaviourPunCallbacks
 {
@@ -25,18 +26,21 @@ public class Shooting : MonoBehaviourPunCallbacks
 
     public void Fire()
     {
-        RaycastHit hit;
-        Ray ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f));
-
-        if (Physics.Raycast(ray, out hit, 200))
+        if (!_animator.GetBool("isDead"))
         {
-            Debug.Log(hit.collider.gameObject.name);
+            RaycastHit hit;
+            Ray ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f));
 
-            photonView.RPC("CreateHitEffects", RpcTarget.All, hit.point);
-
-            if (hit.collider.gameObject.CompareTag("Player") && !hit.collider.gameObject.GetComponent<PhotonView>().IsMine)
+            if (Physics.Raycast(ray, out hit, 200))
             {
-                hit.collider.gameObject.GetComponent<PhotonView>().RPC("TakeDamage", RpcTarget.AllBuffered, 25);
+                Debug.Log(hit.collider.gameObject.name);
+
+                photonView.RPC("CreateHitEffects", RpcTarget.All, hit.point);
+
+                if (hit.collider.gameObject.CompareTag("Player") && !hit.collider.gameObject.GetComponent<PhotonView>().IsMine)
+                {
+                    hit.collider.gameObject.GetComponent<PhotonView>().RPC("TakeDamage", RpcTarget.AllBuffered, 25);
+                }
             }
         }
     }
@@ -66,6 +70,7 @@ public class Shooting : MonoBehaviourPunCallbacks
         if (photonView.IsMine)
         {
             _animator.SetBool("isDead", true);
+            StartCoroutine(RespawnCountdown());
         }
     }
 
@@ -80,11 +85,11 @@ public class Shooting : MonoBehaviourPunCallbacks
             respawnTime--;
 
             transform.GetComponent<PlayerMovementController>().enabled = false;
-            respawnText.GetComponent<Text>().text = "You are killed. Respawning in " + respawnTime.ToString(".00");
+            respawnText.GetComponent<TextMeshProUGUI>().text = "You are killed. Respawning in " + respawnTime.ToString(".00");
         }
 
         _animator.SetBool("isDead", false);
-        respawnText.GetComponent<Text>().text = "";
+        respawnText.GetComponent<TextMeshProUGUI>().text = "";
 
         int randomPointX = Random.Range(-20, 20);
         int randomPointZ = Random.Range(-20, 20);
