@@ -128,7 +128,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public void OnStartGameButtonClicked()
     {
-        PhotonNetwork.LoadLevel("GameScene");
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.LoadLevel("GameScene");
+        }
     }
     #endregion
 

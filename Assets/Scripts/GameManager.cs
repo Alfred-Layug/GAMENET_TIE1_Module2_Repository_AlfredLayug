@@ -18,8 +18,6 @@ public class GameManager : MonoBehaviour
     private IEnumerator DelayedPlayerSpawn()
     {
         yield return new WaitForSeconds(3);
-        int randomPointX = Random.Range(-10, 10);
-        int randomPointZ = Random.Range(-10, 10);
-        PhotonNetwork.Instantiate(_playerPrefab.name, new Vector3(randomPointX, 0, randomPointZ), Quaternion.identity);
+        PhotonNetwork.Instantiate(_playerPrefab.name, SpawnManager.Instance.SetSpawnLocation(), Quaternion.identity);
     }
 }
