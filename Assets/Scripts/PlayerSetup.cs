@@ -27,8 +27,8 @@ public class PlayerSetup : MonoBehaviourPunCallbacks
 
         _fpsModel.SetActive(photonView.IsMine);
         _nonFpsModel.SetActive(!photonView.IsMine);
-        _animator.SetBool("isLocalPlayer", photonView.IsMine);
         _animator.avatar = photonView.IsMine ? _fpsAvatar : _nonFpsAvatar;
+        _animator.SetBool("isLocalPlayer", photonView.IsMine);
 
         _shooting = this.GetComponent<Shooting>();
 
